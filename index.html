@@ -357,6 +357,10 @@ header {
   animation: slideIn 0.4s ease;
 }
 
+.modal-large {
+  max-width: 900px;
+}
+
 @keyframes slideIn { 
   from { 
     transform: translateY(30px); 
@@ -421,7 +425,8 @@ header {
   color: var(--text-muted); 
 }
 
-.input-group input {
+.input-group input,
+.input-group select {
   width: 100%; 
   padding: 14px; 
   border-radius: 12px; 
@@ -431,7 +436,8 @@ header {
   transition: 0.3s;
 }
 
-.input-group input:focus { 
+.input-group input:focus,
+.input-group select:focus { 
   border-color: var(--accent); 
   box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1); 
 }
@@ -486,6 +492,116 @@ header {
   }
 }
 
+/* ADMIN MODAL */
+#admin-modal {
+  z-index: 3000;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.admin-tab {
+  padding: 10px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-bottom: 3px solid transparent;
+  transition: 0.3s;
+}
+
+.admin-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--accent);
+}
+
+.admin-content {
+  display: none;
+}
+
+.admin-content.active {
+  display: block;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.admin-table th {
+  background: var(--primary);
+  color: white;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.admin-table tr:hover {
+  background: #f5f5f5;
+}
+
+.admin-btn {
+  background: var(--accent);
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 5px;
+  transition: 0.3s;
+}
+
+.admin-btn:hover {
+  background: var(--primary);
+}
+
+.admin-btn-delete {
+  background: #e74c3c;
+}
+
+.admin-btn-delete:hover {
+  background: #c0392b;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat-card h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.stat-card .number {
+  font-size: 32px;
+  font-weight: 800;
+}
+
 @media (max-width: 768px) {
   .search-container { 
     display: none; 
@@ -493,6 +609,11 @@ header {
   
   header {
     gap: 10px;
+  }
+
+  .modal {
+    max-width: 95vw;
+    max-height: 95vh;
   }
 }
 
@@ -513,6 +634,15 @@ header {
   .toolbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .admin-table {
+    font-size: 12px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 8px;
   }
 }
 </style>
@@ -612,14 +742,138 @@ header {
   </div>
 </div>
 
+<!-- ADMIN MODAL -->
+<div id="admin-modal" class="overlay" onclick="if(event.target===this) admin.closePanel()">
+  <div class="modal modal-large">
+    <span class="material-icons-round close-icon" onclick="admin.closePanel()" role="button" tabindex="0">close</span>
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-top: 0;">🔧 Адмін Панель</h2>
+    
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="admin.switchTab('stats')">📊 Статистика</button>
+      <button class="admin-tab" onclick="admin.switchTab('products')">📦 Товари</button>
+      <button class="admin-tab" onclick="admin.switchTab('orders')">🛒 Заказы</button>
+      <button class="admin-tab" onclick="admin.switchTab('export')">💾 Експорт/Імпорт</button>
+    </div>
+
+    <!-- STATS TAB -->
+    <div id="stats-content" class="admin-content active">
+      <div class="stats">
+        <div class="stat-card">
+          <h4>Всього товарів</h4>
+          <div class="number" id="stat-total">120</div>
+        </div>
+        <div class="stat-card">
+          <h4>Усього замовлень</h4>
+          <div class="number" id="stat-orders">0</div>
+        </div>
+        <div class="stat-card">
+          <h4>Середня ціна</h4>
+          <div class="number" id="stat-avgprice">28 грн</div>
+        </div>
+        <div class="stat-card">
+          <h4>Категорії</h4>
+          <div class="number" id="stat-cats">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS TAB -->
+    <div id="products-content" class="admin-content">
+      <h3>Управління товарами</h3>
+      <button class="submit-btn" onclick="admin.showAddForm()" style="margin-top: 0;">➕ Додати товар</button>
+      
+      <div id="add-form-container" style="display:none; margin-top: 20px; background: #f9f9f9; padding: 20px; border-radius: 12px;">
+        <h4>Додати новий товар</h4>
+        <div class="input-group">
+          <label>Назва товару</label>
+          <input type="text" id="product-name" placeholder="Назва">
+        </div>
+        <div class="input-group">
+          <label>Категорія</label>
+          <select id="product-cat">
+            <option value="овочі">Овочі</option>
+            <option value="коренеплоди">Коренеплоди</option>
+            <option value="зелень">Зелень</option>
+            <option value="баштанні">Баштанні</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Ціна (грн)</label>
+          <input type="number" id="product-price" placeholder="Ціна">
+        </div>
+        <div class="input-group">
+          <label>URL зображення</label>
+          <input type="url" id="product-img" placeholder="https://...">
+        </div>
+        <button class="submit-btn" onclick="admin.addProduct()" style="margin-top: 10px;">Додати</button>
+        <button class="submit-btn" onclick="admin.hideAddForm()" style="background: #ccc; color: #333; margin-top: 10px;">Скасувати</button>
+      </div>
+
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Назва</th>
+            <th>Категорія</th>
+            <th>Ціна</th>
+            <th>Дії</th>
+          </tr>
+        </thead>
+        <tbody id="products-list"></tbody>
+      </table>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="orders-content" class="admin-content">
+      <h3>Замовлення клієнтів</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>№ Замовлення</th>
+            <th>Клієнт</th>
+            <th>Телефон</th>
+            <th>Сума</th>
+            <th>Дата</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody id="orders-list"></tbody>
+      </table>
+    </div>
+
+    <!-- EXPORT TAB -->
+    <div id="export-content" class="admin-content">
+      <h3>Експорт та імпорт даних</h3>
+      <div style="margin-top: 15px;">
+        <button class="submit-btn" onclick="admin.exportData()" style="margin-top: 0;">📥 Експортувати товари (JSON)</button>
+        <button class="submit-btn" onclick="document.getElementById('import-file').click()" style="margin-top: 10px; background: var(--secondary);">📤 Імпортувати товари</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="admin.importData(event)">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+// ОСНОВНА ПРОГРАМА
 const app = {
   products: [],
   cart: [],
   cat: 'all',
-  ADMIN_EMAIL: 'your-email@example.com', // ЗАМІНІТЬ НА ВАШУ EMAIL
 
   init() {
+    const saved = localStorage.getItem('zh_products_2026');
+    if (saved) {
+      this.products = JSON.parse(saved);
+    } else {
+      this.loadDefaultProducts();
+      this.saveProducts();
+    }
+    this.render(this.products);
+    this.attachFormListener();
+    this.setupAdmin();
+  },
+
+  loadDefaultProducts() {
     const raw = [
       { n: "Томат Ляна Рожева", c: "овочі", p: 19, i: "https://cdn.pixabay.com/photo/2018/10/18/13/52/tomatoes-3758098_640.jpg" },
       { n: "Огірок Фенікс Плюс", c: "овочі", p: 25, i: "https://cdn.pixabay.com/photo/2018/05/07/10/36/cucumber-3382153_640.jpg" },
@@ -636,24 +890,37 @@ const app = {
     ];
 
     const types = ["Еліт", "F1", "Супер", "Ранній", "Відбірний", "Гігант", "Класик", "Преміум", "Еко", "Городній"];
+    let id = 0;
     for(let i = 0; i < 120; i++) {
       let sample = raw[i % raw.length];
       let type = types[Math.floor(i / 12)];
       this.products.push({
-        id: i,
+        id: id++,
         name: `${sample.n} ${type}`,
         price: sample.p + (i % 7),
-        cat: sample.cat || sample.c,
+        cat: sample.c,
         img: sample.i
       });
     }
-    this.render(this.products);
-    this.attachFormListener();
+  },
+
+  saveProducts() {
+    localStorage.setItem('zh_products_2026', JSON.stringify(this.products));
+  },
+
+  setupAdmin() {
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey && e.key === 'a') {
+        admin.showLoginPanel();
+      }
+    });
   },
 
   attachFormListener() {
     const form = document.getElementById('order-form');
-    form.addEventListener('submit', (e) => this.order(e));
+    if (form) {
+      form.addEventListener('submit', (e) => this.order(e));
+    }
   },
 
   render(arr) {
@@ -667,7 +934,7 @@ const app = {
           <h3>${this.escapeHtml(p.name)}</h3>
           <div class="card-footer">
             <div class="price">${p.price} <span>грн</span></div>
-            <button class="add-btn" onclick="app.addToCart(${p.id})" aria-label="Додати до кошика" type="button">
+            <button class="add-btn" onclick="app.addToCart(${p.id})" type="button">
               <span class="material-icons-round">add</span>
             </button>
           </div>
@@ -723,7 +990,7 @@ const app = {
         <span style="font-weight:600; flex:1">${this.escapeHtml(i.name)}</span>
         <span style="display:flex; align-items:center; gap:10px;">
           <b>${i.price} грн</b>
-          <i class="material-icons-round" style="color:red; cursor:pointer; font-size:18px;" onclick="app.rem(${idx})" role="button" tabindex="0">delete</i>
+          <i class="material-icons-round" style="color:red; cursor:pointer; font-size:18px;" onclick="app.rem(${idx})">delete</i>
         </span>
       </div>`;
     }).join('');
@@ -782,18 +1049,12 @@ const app = {
     };
 
     try {
-      // Спосіб 1: Відправка через Formspree
       const response = await fetch('https://formspree.io/f/mreogrwa', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(formData)
       });
 
-      if (!response.ok) throw new Error('Formspree помилка');
-
-      // Спосіб 2: Збереження в localStorage
       const order = {
         id: formData.orderID,
         date: formData.date,
@@ -810,32 +1071,21 @@ const app = {
       h.unshift(order);
       localStorage.setItem('zh_v2026', JSON.stringify(h));
 
-      // Спосіб 3: Email клієнту через EmailJS (опційно)
-      this.sendCustomerEmail(formData);
-
-      // Очистити кошик
       this.cart = [];
       this.updateUI();
 
-      // Закрити модаль
       setTimeout(() => {
         this.modal('cart-modal');
-        alert(`✅ Замовлення ${formData.orderID} успішно прийнято!\n\nНа email ${formData.email} надійде підтвердження.`);
-        
-        // Очистити форму
+        alert(`✅ Замовлення ${formData.orderID} успішно прийнято!`);
         document.getElementById('order-form').reset();
       }, 500);
 
     } catch (error) {
-      console.error('Помилка при оформленні замовлення:', error);
-      alert('⚠️ Помилка при відправленні. Ваше замовлення збережено локально. Спробуйте ще раз.');
-      
-      // Все одно зберегти локально
       const order = {
         id: formData.orderID,
         date: formData.date,
         total: formData.total,
-        status: "Очікування підтвердження",
+        status: "Очікування",
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
@@ -849,12 +1099,6 @@ const app = {
     }
 
     return false;
-  },
-
-  sendCustomerEmail(data) {
-    // Опціональна функція для відправки email клієнту
-    // Можна використати EmailJS або інший сервіс
-    console.log('Замовлення:', data);
   },
 
   renderHistory() {
@@ -879,6 +1123,182 @@ const app = {
   }
 };
 
+// АДМИН ПРОГРАМА
+const admin = {
+  password: 'admin123',
+  authenticated: false,
+
+  showLoginPanel() {
+    const pass = prompt('🔐 Введіть пароль адміна:');
+    if (pass === this.password) {
+      this.authenticated = true;
+      this.openPanel();
+    } else if (pass !== null) {
+      alert('❌ Неправильний пароль!');
+    }
+  },
+
+  openPanel() {
+    const modal = document.getElementById('admin-modal');
+    modal.classList.add('active');
+    this.updateStats();
+    this.renderProducts();
+    this.renderOrders();
+  },
+
+  closePanel() {
+    const modal = document.getElementById('admin-modal');
+    modal.classList.remove('active');
+    this.authenticated = false;
+  },
+
+  switchTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById(tab + '-content').classList.add('active');
+  },
+
+  updateStats() {
+    const orders = JSON.parse(localStorage.getItem('zh_v2026') || '[]');
+    const avgPrice = app.products.length > 0 ? 
+      Math.round(app.products.reduce((a, b) => a + b.price, 0) / app.products.length) : 0;
+    
+    document.getElementById('stat-total').innerText = app.products.length;
+    document.getElementById('stat-orders').innerText = orders.length;
+    document.getElementById('stat-avgprice').innerText = avgPrice + ' грн';
+    document.getElementById('stat-cats').innerText = '5';
+  },
+
+  showAddForm() {
+    document.getElementById('add-form-container').style.display = 'block';
+  },
+
+  hideAddForm() {
+    document.getElementById('add-form-container').style.display = 'none';
+    document.getElementById('product-name').value = '';
+    document.getElementById('product-price').value = '';
+    document.getElementById('product-img').value = '';
+  },
+
+  addProduct() {
+    const name = document.getElementById('product-name').value.trim();
+    const cat = document.getElementById('product-cat').value;
+    const price = parseInt(document.getElementById('product-price').value);
+    const img = document.getElementById('product-img').value.trim();
+
+    if (!name || !price || !img) {
+      alert('❌ Заповніть всі поля!');
+      return;
+    }
+
+    const newId = Math.max(...app.products.map(p => p.id), 0) + 1;
+    app.products.push({ id: newId, name, cat, price, img });
+    app.saveProducts();
+
+    this.hideAddForm();
+    this.renderProducts();
+    app.render(app.products);
+    alert('✅ Товар додано!');
+  },
+
+  deleteProduct(id) {
+    if (confirm('❌ Видалити цей товар?')) {
+      app.products = app.products.filter(p => p.id !== id);
+      app.saveProducts();
+      this.renderProducts();
+      app.render(app.products);
+      alert('✅ Товар видалено!');
+    }
+  },
+
+  renderProducts() {
+    const html = app.products.map(p => `
+      <tr>
+        <td>${p.id}</td>
+        <td>${app.escapeHtml(p.name)}</td>
+        <td>${p.cat}</td>
+        <td>${p.price} грн</td>
+        <td>
+          <button class="admin-btn" onclick="admin.editProduct(${p.id})">✏️ Редагувати</button>
+          <button class="admin-btn admin-btn-delete" onclick="admin.deleteProduct(${p.id})">🗑️ Видалити</button>
+        </td>
+      </tr>`).join('');
+    
+    document.getElementById('products-list').innerHTML = html;
+  },
+
+  editProduct(id) {
+    const product = app.products.find(p => p.id === id);
+    if (!product) return;
+
+    const newName = prompt('Назва товару:', product.name);
+    if (newName === null) return;
+
+    const newPrice = prompt('Ціна (грн):', product.price);
+    if (newPrice === null) return;
+
+    product.name = newName;
+    product.price = parseInt(newPrice);
+    app.saveProducts();
+    
+    this.renderProducts();
+    app.render(app.products);
+    alert('✅ Товар оновлено!');
+  },
+
+  renderOrders() {
+    const orders = JSON.parse(localStorage.getItem('zh_v2026') || '[]');
+    const html = orders.map(o => `
+      <tr>
+        <td>${app.escapeHtml(o.id)}</td>
+        <td>${app.escapeHtml(o.name)}</td>
+        <td>${app.escapeHtml(o.phone)}</td>
+        <td>${app.escapeHtml(o.total)}</td>
+        <td>${app.escapeHtml(o.date)}</td>
+        <td><span class="status-tag">${app.escapeHtml(o.status)}</span></td>
+      </tr>`).join('');
+    
+    document.getElementById('orders-list').innerHTML = html || '<tr><td colspan="6" style="text-align:center; padding:20px;">Замовлень немає</td></tr>';
+  },
+
+  exportData() {
+    const data = JSON.stringify(app.products, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'products_backup.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    alert('✅ Дані експортовані!');
+  },
+
+  importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if (Array.isArray(data)) {
+          app.products = data;
+          app.saveProducts();
+          this.renderProducts();
+          app.render(app.products);
+          alert('✅ Дані імпортовані!');
+        }
+      } catch (err) {
+        alert('❌ Помилка при імпорті!');
+      }
+    };
+    reader.readAsText(file);
+  }
+};
+
+// Запустити сайт
 app.init();
 </script>
 </body>
