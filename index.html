@@ -859,6 +859,8 @@ const app = {
   products: [],
   cart: [],
   cat: 'all',
+  ctrlPressed: false,
+  altPressed: false,
 
   init() {
     const saved = localStorage.getItem('zh_products_2026');
@@ -910,9 +912,19 @@ const app = {
 
   setupAdmin() {
     document.addEventListener('keydown', (e) => {
-      if (e.altKey && e.key === 'a') {
+      if (e.ctrlKey) this.ctrlPressed = true;
+      if (e.altKey) this.altPressed = true;
+      
+      if (this.ctrlPressed && this.altPressed) {
         admin.showLoginPanel();
+        this.ctrlPressed = false;
+        this.altPressed = false;
       }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'Control') this.ctrlPressed = false;
+      if (e.key === 'Alt') this.altPressed = false;
     });
   },
 
