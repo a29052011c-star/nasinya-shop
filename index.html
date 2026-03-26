@@ -462,9 +462,9 @@
       loadProducts();
     }
 
-    // Клавіатурний скорочення Ctrl + Shift + A для показу кнопки входу
+    // Клавіатурний скорочення Ctrl + Shift для показу кнопки входу
     document.addEventListener('keydown', function(event) {
-      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
+      if (event.ctrlKey && event.shiftKey) {
         event.preventDefault();
         document.getElementById('adminLoginBtn').style.display = 'block';
       }
