@@ -3,55 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Насіння Полтавщини — Магазин з Кабінетом</title>
+    <title>Насіння Полтавщини — Магазин Городу</title>
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com">
     <style>
-        :root { --green: #27ae60; --dark: #2c3e50; --light: #f4f7f6; --white: #ffffff; --orange: #f39c12; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--light); color: var(--dark); }
-        
-        header { background: var(--white); padding: 10px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; gap: 10px; }
+        :root { --green: #27ae60; --dark: #2c3e50; --light: #f4f7f6; --orange: #f39c12; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--light); color: var(--dark); overflow-x: hidden; }
+        header { background: #fff; padding: 10px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; gap: 10px; }
         .logo { font-size: 1.4rem; font-weight: bold; color: var(--green); text-decoration: none; }
-        .header-btns { display: flex; gap: 8px; }
-        
-        .btn { padding: 8px 15px; border-radius: 20px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; font-size: 0.85rem; }
+        .search-box { flex-grow: 1; max-width: 300px; }
+        .search-box input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 14px; }
+        .header-btns { display: flex; gap: 5px; }
+        .btn { padding: 10px 15px; border-radius: 25px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
         .cart-btn { background: var(--green); color: white; }
         .cabinet-btn { background: var(--dark); color: white; }
-
-        .search-box { flex-grow: 1; max-width: 300px; }
-        .search-box input { width: 100%; padding: 8px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-
         .container { padding: 20px 5%; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 140px; object-fit: cover; background: #eee; }
-        .card-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card h3 { font-size: 0.9rem; margin: 5px 0; min-height: 2.4em; }
-        .price { font-size: 1.1rem; font-weight: bold; color: var(--green); margin-bottom: 8px; }
-        .buy-btn { background: var(--green); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
-
-        /* Кабінет та Кошик */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: white; padding: 25px; border-radius: 15px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #888; }
-        
-        .status-badge { background: var(--orange); color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-bottom: 5px; }
-        .history-card { background: #fdfdfd; border: 1px solid #eee; padding: 12px; border-radius: 10px; margin-bottom: 12px; border-left: 5px solid var(--orange); }
-        
-        input, select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--dark); color: white; padding: 10px 25px; border-radius: 30px; display: none; z-index: 3000; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; transition: 0.3s; border: 1px solid #eee; }
+        .card img { width: 100%; height: 130px; object-fit: cover; background: #f9f9f9; display: block; }
+        .card-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card h3 { font-size: 14px; margin: 5px 0 10px; min-height: 40px; line-height: 1.3; }
+        .price { font-size: 18px; font-weight: bold; color: var(--green); margin-bottom: 12px; }
+        .buy-btn { background: var(--green); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 10px; }
+        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; }
+        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 28px; cursor: pointer; color: #bbb; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
+        .history-card { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid var(--orange); }
+        .status-badge { background: var(--orange); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; }
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--dark); color: white; padding: 12px 30px; border-radius: 50px; display: none; z-index: 3000; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="toast">🌿 Додано у кошик</div>
+<div id="toast">🌿 Товар у кошику</div>
 
 <header>
     <a href="#" class="logo">🌿 Насіння Полтавщини</a>
     <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Пошук насіння..." oninput="filterProducts()">
+        <input type="text" id="searchInput" placeholder="Пошук..." oninput="filterProducts()">
     </div>
     <div class="header-btns">
-        <button class="btn cabinet-btn" onclick="toggleModal('history-modal')">📜 Кабінет</button>
+        <button class="btn cabinet-btn" onclick="toggleModal('history-modal')">📦 Кабінет</button>
         <button class="btn cart-btn" onclick="toggleModal('cart-modal')">🛒 (<span id="cart-count">0</span>)</button>
     </div>
 </header>
@@ -60,29 +53,27 @@
     <div class="products-grid" id="main-grid"></div>
 </div>
 
-<!-- Кошик -->
 <div id="cart-modal" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="toggleModal('cart-modal')">&times;</span>
-        <h2>Мій кошик</h2>
+        <h2>🛍️ Кошик</h2>
         <div id="cart-items"></div>
         <h3 id="total-sum" style="text-align: right; color: var(--green);">0 грн</h3>
-        <form action="https://formspree.io/f/mreogrwa" method="POST" onsubmit="saveToHistory()">
-            <input type="text" name="ПІБ" placeholder="Ваше ПІБ" required>
-            <input type="tel" name="Телефон" placeholder="Телефон" required>
+        <form action="https://formspree.io" method="POST" onsubmit="saveToHistory()">
+            <input type="text" name="ПІБ" placeholder="Прізвище та ім'я" required>
+            <input type="tel" name="Телефон" placeholder="Номер телефону" required>
             <select name="Доставка" required>
-                <option value="">Оберіть пошту</option>
+                <option value="">Виберіть спосіб доставки</option>
                 <option value="Нова Пошта">Нова Пошта</option>
                 <option value="Укрпошта">Укрпошта</option>
             </select>
-            <input type="text" name="Адреса" placeholder="Місто та відділення" required>
+            <input type="text" name="Відділення" placeholder="Місто та № відділення" required>
             <input type="hidden" name="Замовлення" id="order-data">
-            <button type="submit" class="buy-btn" style="padding: 15px; margin-top: 10px;">ВІДПРАВИТИ ЗАМОВЛЕННЯ</button>
+            <button type="submit" class="buy-btn" style="padding: 15px; margin-top: 15px;">ПІДТВЕРДИТИ</button>
         </form>
     </div>
 </div>
 
-<!-- Особистий кабінет (Історія) -->
 <div id="history-modal" class="modal">
     <div class="modal-content">
         <span class="close-modal" onclick="toggleModal('history-modal')">&times;</span>
@@ -93,17 +84,24 @@
 
 <script>
     const seeds = [];
-    const names = ["Томат Ляна", "Огірок Фенікс", "Буряк Детройт", "Морква Нантська", "Кабачок Чаклун", "Капуста Агресор", "Цибуля Халцедон", "Редиска Сора", "Перець Чудо", "Баклажан Алмаз", "Кріп", "Петрушка", "Базилік", "Салат", "Кавун", "Диня", "Гарбуз", "Часник", "Броколі", "Щавель"];
+    const seedData = [
+        { name: "Томат Ляна Рожевий", img: "https://upload.wikimedia.org" },
+        { name: "Огірок Фенікс Плюс", img: "https://upload.wikimedia.org" },
+        { name: "Буряк Детройт", img: "https://upload.wikimedia.org" },
+        { name: "Морква Нантська", img: "https://upload.wikimedia.org" },
+        { name: "Капуста Агресор", img: "https://upload.wikimedia.org" },
+        { name: "Кабачок Чаклун", img: "https://upload.wikimedia.org" },
+        { name: "Цибуля Халцедон", img: "https://upload.wikimedia.org" },
+        { name: "Редиска Сора", img: "https://upload.wikimedia.org" },
+        { name: "Перець Чудо", img: "https://upload.wikimedia.org" },
+        { name: "Баклажан Алмаз", img: "https://upload.wikimedia.org" },
+        { name: "Зелень (Кріп/Петрушка)", img: "https://upload.wikimedia.org" },
+        { name: "Кавун Продюсер", img: "https://upload.wikimedia.org" }
+    ];
 
-    // Створюємо 90 видів з робочими фото
-    for(let i=1; i<=90; i++) {
-        seeds.push({
-            id: i,
-            name: `${names[i % names.length]} (сорт №${i})`,
-            price: 15 + (i % 35),
-            // Стабільне джерело картинок овочів
-            img: `https://loremflickr.com{i}`
-        });
+    for(let i=0; i<90; i++) {
+        const item = seedData[i % seedData.length];
+        seeds.push({ id: i + 1, name: `${item.name} (№${i + 1})`, price: 15 + (i % 25), img: item.img });
     }
 
     let cart = [];
@@ -116,7 +114,7 @@
                 <div class="card-info">
                     <h3>${s.name}</h3>
                     <div class="price">${s.price} грн</div>
-                    <button class="buy-btn" onclick="addToCart(${s.id})">У кошик</button>
+                    <button class="buy-btn" onclick="addToCart(${s.id})">До кошика</button>
                 </div>
             </div>
         `).join('');
@@ -124,8 +122,7 @@
 
     function filterProducts() {
         const query = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = seeds.filter(s => s.name.toLowerCase().includes(query));
-        displayProducts(filtered);
+        displayProducts(seeds.filter(s => s.name.toLowerCase().includes(query)));
     }
 
     function addToCart(id) {
@@ -146,19 +143,14 @@
 
     function renderCart() {
         const list = document.getElementById('cart-items');
-        const sumEl = document.getElementById('total-sum');
-        const orderInput = document.getElementById('order-data');
         let sum = 0, text = "";
         list.innerHTML = cart.map(i => {
             sum += i.price;
             text += i.name + "; ";
-            return `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid #eee;">
-                <span>${i.name}</span>
-                <span>${i.price} грн <button onclick="removeFromCart(${i.cartId})" style="border:none; background:none; cursor:pointer; color:red;">✕</button></span>
-            </div>`;
+            return `<div class="cart-item"><span>${i.name}</span><span>${i.price} грн <span onclick="removeFromCart(${i.cartId})" style="color:red; cursor:pointer; margin-left:10px;">✕</span></span></div>`;
         }).join('');
-        sumEl.innerText = sum + " грн";
-        orderInput.value = text + " РАЗОМ: " + sum + " грн";
+        document.getElementById('total-sum').innerText = sum + " грн";
+        document.getElementById('order-data').value = text + " РАЗОМ: " + sum + " грн";
     }
 
     function removeFromCart(cid) {
@@ -167,35 +159,17 @@
         renderCart();
     }
 
-    // Збереження в кабінет
     function saveToHistory() {
-        const total = document.getElementById('total-sum').innerText;
-        const newOrder = {
-            date: new Date().toLocaleString(),
-            items: cart.map(i => i.name).join(', '),
-            total: total,
-            status: "В обробці"
-        };
-        let orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
-        orders.unshift(newOrder);
-        localStorage.setItem('my_orders', JSON.stringify(orders));
+        const order = { id: "#" + Math.floor(Math.random()*1000), date: new Date().toLocaleString(), items: cart.map(i => i.name).join(', '), total: document.getElementById('total-sum').innerText, status: "В обробці" };
+        let orders = JSON.parse(localStorage.getItem('seed_orders_v3') || '[]');
+        orders.unshift(order);
+        localStorage.setItem('seed_orders_v3', JSON.stringify(orders));
     }
 
     function renderHistory() {
         const list = document.getElementById('history-list');
-        const orders = JSON.parse(localStorage.getItem('my_orders') || '[]');
-        if(!orders.length) {
-            list.innerHTML = "<p style='text-align:center'>У вас ще немає замовлень</p>";
-            return;
-        }
-        list.innerHTML = orders.map(o => `
-            <div class="history-card">
-                <span class="status-badge">${o.status}</span>
-                <div style="font-size:0.8rem; color:#888">${o.date}</div>
-                <div style="margin:8px 0; font-weight:bold">${o.items}</div>
-                <div style="color:var(--green); font-weight:bold">Сума: ${o.total}</div>
-            </div>
-        `).join('');
+        const orders = JSON.parse(localStorage.getItem('seed_orders_v3') || '[]');
+        list.innerHTML = orders.length ? orders.map(o => `<div class="history-card"><div><strong>Замовлення ${o.id}</strong> <span class="status-badge">${o.status}</span></div><div style="font-size:12px; color:#888;">${o.date}</div><div style="font-size:14px; margin-top:5px;">${o.items}</div><div style="color:var(--green); font-weight:bold; margin-top:10px;">Сума: ${o.total}</div></div>`).join('') : "<p style='text-align:center'>Порожньо</p>";
     }
 
     displayProducts(seeds);
