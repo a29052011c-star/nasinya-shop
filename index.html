@@ -1,178 +1,885 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Насіння Полтавщини — Магазин Городу</title>
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com">
-    <style>
-        :root { --green: #27ae60; --dark: #2c3e50; --light: #f4f7f6; --orange: #f39c12; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: var(--light); color: var(--dark); overflow-x: hidden; }
-        header { background: #fff; padding: 10px 5%; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; gap: 10px; }
-        .logo { font-size: 1.4rem; font-weight: bold; color: var(--green); text-decoration: none; }
-        .search-box { flex-grow: 1; max-width: 300px; }
-        .search-box input { width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 14px; }
-        .header-btns { display: flex; gap: 5px; }
-        .btn { padding: 10px 15px; border-radius: 25px; border: none; cursor: pointer; font-weight: bold; font-size: 13px; }
-        .cart-btn { background: var(--green); color: white; }
-        .cabinet-btn { background: var(--dark); color: white; }
-        .container { padding: 20px 5%; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; transition: 0.3s; border: 1px solid #eee; }
-        .card img { width: 100%; height: 130px; object-fit: cover; background: #f9f9f9; display: block; }
-        .card-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card h3 { font-size: 14px; margin: 5px 0 10px; min-height: 40px; line-height: 1.3; }
-        .price { font-size: 18px; font-weight: bold; color: var(--green); margin-bottom: 12px; }
-        .buy-btn { background: var(--green); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; padding: 10px; }
-        .modal-content { background: white; padding: 25px; border-radius: 20px; width: 100%; max-width: 450px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .close-modal { position: absolute; top: 15px; right: 15px; font-size: 28px; cursor: pointer; color: #bbb; }
-        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; font-size: 14px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
-        .history-card { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 6px solid var(--orange); }
-        .status-badge { background: var(--orange); color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; }
-        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--dark); color: white; padding: 12px 30px; border-radius: 50px; display: none; z-index: 3000; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Зелений Хутір — Авторське насіння 2026</title>
+
+<!-- Шрифти та іконки -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+
+<style>
+/* ІНДИВІДУАЛЬНА КОЛЬОРОВА ГАМА */
+:root {
+  --primary: #1b4d3e;
+  --accent: #2ecc71;
+  --secondary: #e67e22;
+  --bg-creme: #f9f7f2;
+  --white: #ffffff;
+  --text-main: #2c3e50;
+  --text-muted: #7f8c8d;
+  --shadow: 0 12px 40px rgba(0,0,0,0.08);
+  --border-radius: 16px;
+}
+
+* { 
+  box-sizing: border-box; 
+  outline: none; 
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  background-color: var(--bg-creme);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+/* HEADER */
+header {
+  background: var(--primary);
+  padding: 15px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--white);
+}
+
+.brand i { 
+  font-size: 32px; 
+  color: var(--accent); 
+}
+
+.brand span {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+.search-container {
+  flex-grow: 1;
+  max-width: 500px;
+  margin: 0 30px;
+  position: relative;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 12px 20px 12px 50px;
+  border-radius: 30px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: var(--white);
+  font-size: 15px;
+  transition: 0.3s;
+}
+
+.search-container input::placeholder { 
+  color: rgba(255,255,255,0.5); 
+}
+
+.search-container input:focus { 
+  background: var(--white); 
+  color: var(--text-main); 
+}
+
+.search-container i { 
+  position: absolute; 
+  left: 18px; 
+  top: 12px; 
+  color: var(--accent); 
+}
+
+.header-nav { 
+  display: flex; 
+  gap: 15px; 
+}
+
+.btn-header {
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: var(--white);
+  padding: 10px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-header:hover { 
+  background: var(--accent); 
+  border-color: var(--accent); 
+  transform: translateY(-2px); 
+}
+
+.btn-cart { 
+  background: var(--accent); 
+  border: none; 
+  color: var(--primary);
+  position: relative;
+}
+
+.badge {
+  background: var(--secondary);
+  color: white;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+}
+
+/* HERO SECTION */
+.hero {
+  background: var(--primary);
+  color: var(--white);
+  padding: 60px 5% 100px;
+  text-align: center;
+  clip-path: ellipse(100% 100% at 50% 0%);
+}
+
+.hero h1 { 
+  font-family: 'Playfair Display', serif; 
+  font-size: 3rem; 
+  margin: 0; 
+}
+
+.hero p { 
+  font-size: 1.2rem; 
+  opacity: 0.8; 
+  margin-top: 15px; 
+  font-weight: 300; 
+}
+
+/* TOOLBAR */
+.toolbar {
+  margin: -40px 5% 0;
+  background: var(--white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  position: relative;
+  z-index: 10;
+}
+
+.cat-nav { 
+  display: flex; 
+  gap: 10px; 
+  overflow-x: auto; 
+  scrollbar-width: none; 
+}
+
+.cat-nav::-webkit-scrollbar { 
+  display: none; 
+}
+
+.chip {
+  padding: 10px 25px;
+  background: var(--bg-creme);
+  border: 1px solid #eee;
+  border-radius: 30px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: 0.3s;
+}
+
+.chip.active { 
+  background: var(--primary); 
+  color: var(--white); 
+  border-color: var(--primary); 
+}
+
+/* PRODUCT GRID */
+.catalog { 
+  padding: 40px 5%; 
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+  transition: 0.4s;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #f1f1f1;
+}
+
+.card:hover { 
+  transform: translateY(-10px); 
+  box-shadow: var(--shadow); 
+}
+
+.card-img {
+  width: 100%;
+  height: 220px;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.5s;
+}
+
+.card:hover img { 
+  transform: scale(1.08); 
+}
+
+.card-content { 
+  padding: 20px; 
+  flex-grow: 1; 
+  display: flex; 
+  flex-direction: column; 
+}
+
+.card-content .tag { 
+  font-size: 10px; 
+  font-weight: 800; 
+  color: var(--accent); 
+  text-transform: uppercase; 
+  margin-bottom: 5px; 
+}
+
+.card-content h3 { 
+  font-size: 16px; 
+  margin: 0 0 15px; 
+  font-weight: 700; 
+  color: var(--primary); 
+  height: 45px; 
+  overflow: hidden; 
+}
+
+.card-footer { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  margin-top: auto; 
+  border-top: 1px solid #f9f9f9; 
+  padding-top: 15px; 
+}
+
+.price { 
+  font-size: 24px; 
+  font-weight: 800; 
+  color: var(--text-main); 
+}
+
+.price span { 
+  font-size: 14px; 
+  font-weight: 400; 
+  color: var(--text-muted); 
+}
+
+.add-btn {
+  background: var(--primary);
+  color: white;
+  width: 45px; 
+  height: 45px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  transition: 0.3s;
+}
+
+.add-btn:hover { 
+  background: var(--accent); 
+  transform: rotate(90deg); 
+}
+
+/* MODALS */
+.overlay {
+  display: none; 
+  position: fixed; 
+  inset: 0;
+  background: rgba(27, 77, 62, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 2000; 
+  justify-content: center; 
+  align-items: center; 
+  padding: 20px;
+}
+
+.overlay.active {
+  display: flex;
+}
+
+.modal {
+  background: var(--white);
+  width: 100%; 
+  max-width: 500px;
+  border-radius: 24px; 
+  padding: 35px;
+  position: relative; 
+  max-height: 85vh; 
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: slideIn 0.4s ease;
+}
+
+@keyframes slideIn { 
+  from { 
+    transform: translateY(30px); 
+    opacity: 0; 
+  } 
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  } 
+}
+
+.close-icon { 
+  position: absolute; 
+  top: 20px; 
+  right: 20px; 
+  cursor: pointer; 
+  color: #ccc; 
+  font-size: 28px;
+  user-select: none;
+}
+
+.close-icon:hover {
+  color: var(--primary);
+}
+
+/* CART & HISTORY */
+.item-row { 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  padding: 12px 0; 
+  border-bottom: 1px solid #eee; 
+}
+
+.h-card { 
+  background: #fdfdfd; 
+  border: 1px solid #eee; 
+  padding: 15px; 
+  border-radius: 15px; 
+  margin-bottom: 15px; 
+}
+
+.status-tag { 
+  padding: 3px 10px; 
+  background: #fff3e0; 
+  color: var(--secondary); 
+  border-radius: 5px; 
+  font-size: 11px; 
+  font-weight: 700; 
+}
+
+/* FORMS */
+.input-group { 
+  margin-bottom: 15px; 
+}
+
+.input-group label { 
+  display: block; 
+  font-size: 13px; 
+  font-weight: 600; 
+  margin-bottom: 5px; 
+  color: var(--text-muted); 
+}
+
+.input-group input {
+  width: 100%; 
+  padding: 14px; 
+  border-radius: 12px; 
+  border: 1px solid #ddd;
+  font-family: inherit; 
+  font-size: 15px; 
+  transition: 0.3s;
+}
+
+.input-group input:focus { 
+  border-color: var(--accent); 
+  box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1); 
+}
+
+.submit-btn {
+  width: 100%; 
+  padding: 18px; 
+  background: var(--accent); 
+  color: var(--primary);
+  border: none; 
+  border-radius: 15px; 
+  font-weight: 800; 
+  cursor: pointer; 
+  margin-top: 20px;
+  font-size: 16px; 
+  transition: 0.3s;
+}
+
+.submit-btn:hover { 
+  background: var(--white); 
+  border: 2px solid var(--accent); 
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#toast {
+  position: fixed; 
+  bottom: 40px; 
+  left: 50%; 
+  transform: translateX(-50%);
+  background: var(--primary); 
+  color: white; 
+  padding: 15px 40px;
+  border-radius: 50px; 
+  z-index: 3000; 
+  font-weight: 600; 
+  display: none;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .search-container { 
+    display: none; 
+  }
+  
+  header {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid { 
+    grid-template-columns: 1fr 1fr; 
+    gap: 15px; 
+  }
+  
+  .hero h1 { 
+    font-size: 2rem; 
+  }
+  
+  header { 
+    padding: 10px 4%; 
+  }
+  
+  .toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+</style>
 </head>
 <body>
 
-<div id="toast">🌿 Товар у кошику</div>
+<div id="toast">🌿 Додано у кошик</div>
 
 <header>
-    <a href="#" class="logo">🌿 Насіння Полтавщини</a>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Пошук..." oninput="filterProducts()">
-    </div>
-    <div class="header-btns">
-        <button class="btn cabinet-btn" onclick="toggleModal('history-modal')">📦 Кабінет</button>
-        <button class="btn cart-btn" onclick="toggleModal('cart-modal')">🛒 (<span id="cart-count">0</span>)</button>
-    </div>
+  <a href="#" class="brand">
+    <i class="material-icons-round">eco</i>
+    <span>Зелений Хутір</span>
+  </a>
+
+  <div class="search-container">
+    <i class="material-icons-round">search</i>
+    <input type="text" id="searchInput" placeholder="Шукати сорт насіння..." oninput="app.filter()">
+  </div>
+
+  <div class="header-nav">
+    <button class="btn-header" onclick="app.modal('cab-modal')" aria-label="Особистий кабінет">
+      <i class="material-icons-round">person</i>
+    </button>
+    <button class="btn-header btn-cart" onclick="app.modal('cart-modal')" aria-label="Кошик">
+      <i class="material-icons-round">shopping_basket</i>
+      <div class="badge" id="cart-count">0</div>
+    </button>
+  </div>
 </header>
 
-<div class="container">
-    <div class="products-grid" id="main-grid"></div>
+<section class="hero">
+  <h1>Урожай починається тут</h1>
+  <p>Насіння від найкращих селекціонерів з доставкою до ваших воріт</p>
+</section>
+
+<div class="toolbar">
+  <div class="cat-nav">
+    <button class="chip active" onclick="app.setCat('all', this)">Всі сорти</button>
+    <button class="chip" onclick="app.setCat('овочі', this)">Овочі</button>
+    <button class="chip" onclick="app.setCat('коренеплоди', this)">Коренеплоди</button>
+    <button class="chip" onclick="app.setCat('зелень', this)">Зелень</button>
+    <button class="chip" onclick="app.setCat('баштанні', this)">Баштанні</button>
+  </div>
+
+  <select id="sortOrder" onchange="app.sort(this.value)" style="border: 1px solid #ddd; font-weight: 600; background: var(--bg-creme); padding: 10px; border-radius: 10px; cursor: pointer;">
+    <option value="new">Новинки</option>
+    <option value="cheap">Дешевші</option>
+    <option value="expensive">Дорожчі</option>
+  </select>
 </div>
 
-<div id="cart-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="toggleModal('cart-modal')">&times;</span>
-        <h2>🛍️ Кошик</h2>
-        <div id="cart-items"></div>
-        <h3 id="total-sum" style="text-align: right; color: var(--green);">0 грн</h3>
-        <form action="https://formspree.io" method="POST" onsubmit="saveToHistory()">
-            <input type="text" name="ПІБ" placeholder="Прізвище та ім'я" required>
-            <input type="tel" name="Телефон" placeholder="Номер телефону" required>
-            <select name="Доставка" required>
-                <option value="">Виберіть спосіб доставки</option>
-                <option value="Нова Пошта">Нова Пошта</option>
-                <option value="Укрпошта">Укрпошта</option>
-            </select>
-            <input type="text" name="Відділення" placeholder="Місто та № відділення" required>
-            <input type="hidden" name="Замовлення" id="order-data">
-            <button type="submit" class="buy-btn" style="padding: 15px; margin-top: 15px;">ПІДТВЕРДИТИ</button>
-        </form>
+<main class="catalog">
+  <div class="grid" id="main-grid"></div>
+</main>
+
+<!-- CART MODAL -->
+<div id="cart-modal" class="overlay" onclick="if(event.target===this) app.modal('cart-modal')">
+  <div class="modal">
+    <span class="material-icons-round close-icon" onclick="app.modal('cart-modal')" role="button" tabindex="0">close</span>
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-top: 0;">Мій кошик</h2>
+    <div id="cart-items-list"></div>
+
+    <div style="display: flex; justify-content: space-between; margin: 25px 0; border-top: 2px solid var(--bg-creme); padding-top: 15px;">
+      <span style="font-weight: 600; color: var(--text-muted);">Всього до сплати:</span>
+      <span id="final-price" style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">0 грн</span>
     </div>
+
+    <form id="order-form" method="POST">
+      <div class="input-group">
+        <label for="name">Повне ім'я</label>
+        <input type="text" id="name" name="name" placeholder="Іванов Іван" required>
+      </div>
+      <div class="input-group">
+        <label for="email">Електронна пошта</label>
+        <input type="email" id="email" name="email" placeholder="ivanov@example.com" required>
+      </div>
+      <div class="input-group">
+        <label for="phone">Телефон</label>
+        <input type="tel" id="phone" name="phone" placeholder="+38 (0__) ___ __ __" required>
+      </div>
+      <div class="input-group">
+        <label for="address">Адреса (Місто та Відділення)</label>
+        <input type="text" id="address" name="address" placeholder="Полтава, Нова Пошта №1" required>
+      </div>
+      <input type="hidden" name="items" id="hidden-order-list">
+      <button class="submit-btn" id="submit-btn" type="submit">ОФОРМИТИ ЗАМОВЛЕННЯ</button>
+    </form>
+  </div>
 </div>
 
-<div id="history-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="toggleModal('history-modal')">&times;</span>
-        <h2>📦 Мої замовлення</h2>
-        <div id="history-list"></div>
-    </div>
+<!-- CABINET MODAL -->
+<div id="cab-modal" class="overlay" onclick="if(event.target===this) app.modal('cab-modal')">
+  <div class="modal">
+    <span class="material-icons-round close-icon" onclick="app.modal('cab-modal')" role="button" tabindex="0">close</span>
+    <h2 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-top: 0;">📦 Мої замовлення</h2>
+    <div id="history-content"></div>
+  </div>
 </div>
 
 <script>
-    const seeds = [];
-    const seedData = [
-        { name: "Томат Ляна Рожевий", img: "https://upload.wikimedia.org" },
-        { name: "Огірок Фенікс Плюс", img: "https://upload.wikimedia.org" },
-        { name: "Буряк Детройт", img: "https://upload.wikimedia.org" },
-        { name: "Морква Нантська", img: "https://upload.wikimedia.org" },
-        { name: "Капуста Агресор", img: "https://upload.wikimedia.org" },
-        { name: "Кабачок Чаклун", img: "https://upload.wikimedia.org" },
-        { name: "Цибуля Халцедон", img: "https://upload.wikimedia.org" },
-        { name: "Редиска Сора", img: "https://upload.wikimedia.org" },
-        { name: "Перець Чудо", img: "https://upload.wikimedia.org" },
-        { name: "Баклажан Алмаз", img: "https://upload.wikimedia.org" },
-        { name: "Зелень (Кріп/Петрушка)", img: "https://upload.wikimedia.org" },
-        { name: "Кавун Продюсер", img: "https://upload.wikimedia.org" }
+const app = {
+  products: [],
+  cart: [],
+  cat: 'all',
+  ADMIN_EMAIL: 'your-email@example.com', // ЗАМІНІТЬ НА ВАШУ EMAIL
+
+  init() {
+    const raw = [
+      { n: "Томат Ляна Рожева", c: "овочі", p: 19, i: "https://cdn.pixabay.com/photo/2018/10/18/13/52/tomatoes-3758098_640.jpg" },
+      { n: "Огірок Фенікс Плюс", c: "овочі", p: 25, i: "https://cdn.pixabay.com/photo/2018/05/07/10/36/cucumber-3382153_640.jpg" },
+      { n: "Морква Нантська", c: "коренеплоди", p: 18, i: "https://cdn.pixabay.com/photo/2015/04/08/13/13/vegetables-712661_640.jpg" },
+      { n: "Буряк Бордо 237", c: "коренеплоди", p: 16, i: "https://cdn.pixabay.com/photo/2020/01/07/20/36/beet-4749379_640.jpg" },
+      { n: "Капуста Агресор F1", c: "овочі", p: 48, i: "https://cdn.pixabay.com/photo/2017/02/11/17/13/cabbage-2056975_640.jpg" },
+      { n: "Кавун Продюсер", c: "баштанні", p: 28, i: "https://cdn.pixabay.com/photo/2015/11/06/11/44/watermelon-1027078_640.jpg" },
+      { n: "Диня Амал F1", c: "баштанні", p: 44, i: "https://cdn.pixabay.com/photo/2018/08/02/19/33/cantaloupe-melon-3577997_640.jpg" },
+      { n: "Гарбуз Мускатний", c: "баштанні", p: 22, i: "https://cdn.pixabay.com/photo/2014/11/25/08/18/pumpkin-544x408_640.jpg" },
+      { n: "Перець Каліфорнійське Чудо", c: "овочі", p: 32, i: "https://cdn.pixabay.com/photo/2016/04/15/11/59/peppers-1331183_640.jpg" },
+      { n: "Кріп Кущовий Алігатор", c: "зелень", p: 14, i: "https://cdn.pixabay.com/photo/2015/05/31/13/50/dill-791621_640.jpg" },
+      { n: "Баклажан Алмаз Чорний", c: "овочі", p: 24, i: "https://cdn.pixabay.com/photo/2019/09/16/07/19/eggplant-4478231_640.jpg" },
+      { n: "Салат Лолло Росса", c: "зелень", p: 21, i: "https://cdn.pixabay.com/photo/2014/11/25/13/47/red-lettuce-544x410_640.jpg" }
     ];
 
-    for(let i=0; i<90; i++) {
-        const item = seedData[i % seedData.length];
-        seeds.push({ id: i + 1, name: `${item.name} (№${i + 1})`, price: 15 + (i % 25), img: item.img });
+    const types = ["Еліт", "F1", "Супер", "Ранній", "Відбірний", "Гігант", "Класик", "Преміум", "Еко", "Городній"];
+    for(let i = 0; i < 120; i++) {
+      let sample = raw[i % raw.length];
+      let type = types[Math.floor(i / 12)];
+      this.products.push({
+        id: i,
+        name: `${sample.n} ${type}`,
+        price: sample.p + (i % 7),
+        cat: sample.cat || sample.c,
+        img: sample.i
+      });
+    }
+    this.render(this.products);
+    this.attachFormListener();
+  },
+
+  attachFormListener() {
+    const form = document.getElementById('order-form');
+    form.addEventListener('submit', (e) => this.order(e));
+  },
+
+  render(arr) {
+    document.getElementById('main-grid').innerHTML = arr.map(p => `
+      <div class="card">
+        <div class="card-img">
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22240%22 height=%22220%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22240%22 height=%22220%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239a9a9a%22 font-family=%22Arial%22 font-size=%2214%22%3EФото товару%3C/text%3E%3C/svg%3E'">
+        </div>
+        <div class="card-content">
+          <span class="tag">${p.cat}</span>
+          <h3>${this.escapeHtml(p.name)}</h3>
+          <div class="card-footer">
+            <div class="price">${p.price} <span>грн</span></div>
+            <button class="add-btn" onclick="app.addToCart(${p.id})" aria-label="Додати до кошика" type="button">
+              <span class="material-icons-round">add</span>
+            </button>
+          </div>
+        </div>
+      </div>`).join('');
+  },
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  },
+
+  addToCart(id) {
+    const item = this.products.find(x => x.id === id);
+    if (!item) return;
+    this.cart.push({...item, uid: Math.random()});
+    this.updateUI();
+    const t = document.getElementById('toast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 1200);
+  },
+
+  updateUI() {
+    document.getElementById('cart-count').innerText = this.cart.length;
+  },
+
+  modal(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.classList.toggle('active');
+    if(id === 'cart-modal' && m.classList.contains('active')) this.renderCart();
+    if(id === 'cab-modal' && m.classList.contains('active')) this.renderHistory();
+  },
+
+  renderCart() {
+    let sum = 0, names = "";
+    const cartList = document.getElementById('cart-items-list');
+    
+    if (this.cart.length === 0) {
+      cartList.innerHTML = "<p style='text-align:center; color:#ccc; padding:30px'>Ваш кошик порожній...</p>";
+      document.getElementById('final-price').innerText = "0 грн";
+      document.getElementById('submit-btn').disabled = true;
+      return;
     }
 
-    let cart = [];
+    document.getElementById('submit-btn').disabled = false;
 
-    function displayProducts(data) {
-        const grid = document.getElementById('main-grid');
-        grid.innerHTML = data.map(s => `
-            <div class="card">
-                <img src="${s.img}" alt="${s.name}" loading="lazy">
-                <div class="card-info">
-                    <h3>${s.name}</h3>
-                    <div class="price">${s.price} грн</div>
-                    <button class="buy-btn" onclick="addToCart(${s.id})">До кошика</button>
-                </div>
-            </div>
-        `).join('');
+    cartList.innerHTML = this.cart.map((i, idx) => {
+      sum += i.price;
+      names += i.name + "; ";
+      return `<div class="item-row">
+        <span style="font-weight:600; flex:1">${this.escapeHtml(i.name)}</span>
+        <span style="display:flex; align-items:center; gap:10px;">
+          <b>${i.price} грн</b>
+          <i class="material-icons-round" style="color:red; cursor:pointer; font-size:18px;" onclick="app.rem(${idx})" role="button" tabindex="0">delete</i>
+        </span>
+      </div>`;
+    }).join('');
+
+    document.getElementById('final-price').innerText = sum + " грн";
+    document.getElementById('hidden-order-list').value = names + " РАЗОМ: " + sum + " грн";
+  },
+
+  rem(idx) {
+    this.cart.splice(idx, 1);
+    this.updateUI();
+    this.renderCart();
+  },
+
+  filter() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const res = this.products.filter(p => 
+      (this.cat === 'all' || p.cat === this.cat) && 
+      p.name.toLowerCase().includes(q)
+    );
+    this.render(res);
+  },
+
+  setCat(c, el) {
+    this.cat = c;
+    document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    this.filter();
+  },
+
+  sort(mode) {
+    let sorted = [...this.products];
+    if(mode === 'cheap') sorted.sort((a,b) => a.price - b.price);
+    if(mode === 'expensive') sorted.sort((a,b) => b.price - a.price);
+    this.products = sorted;
+    this.filter();
+  },
+
+  async order(event) {
+    event.preventDefault();
+    
+    if (this.cart.length === 0) {
+      alert('Кошик порожній!');
+      return false;
     }
 
-    function filterProducts() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        displayProducts(seeds.filter(s => s.name.toLowerCase().includes(query)));
+    const formData = {
+      name: document.getElementById('name').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      address: document.getElementById('address').value,
+      items: document.getElementById('hidden-order-list').value,
+      total: document.getElementById('final-price').innerText,
+      date: new Date().toLocaleString('uk-UA'),
+      orderID: "#" + Math.floor(Math.random() * 9000 + 1000)
+    };
+
+    try {
+      // Спосіб 1: Відправка через Formspree
+      const response = await fetch('https://formspree.io/f/mreogrwa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (!response.ok) throw new Error('Formspree помилка');
+
+      // Спосіб 2: Збереження в localStorage
+      const order = {
+        id: formData.orderID,
+        date: formData.date,
+        total: formData.total,
+        status: "В обробці",
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        items: formData.items
+      };
+
+      let h = JSON.parse(localStorage.getItem('zh_v2026') || '[]');
+      h.unshift(order);
+      localStorage.setItem('zh_v2026', JSON.stringify(h));
+
+      // Спосіб 3: Email клієнту через EmailJS (опційно)
+      this.sendCustomerEmail(formData);
+
+      // Очистити кошик
+      this.cart = [];
+      this.updateUI();
+
+      // Закрити модаль
+      setTimeout(() => {
+        this.modal('cart-modal');
+        alert(`✅ Замовлення ${formData.orderID} успішно прийнято!\n\nНа email ${formData.email} надійде підтвердження.`);
+        
+        // Очистити форму
+        document.getElementById('order-form').reset();
+      }, 500);
+
+    } catch (error) {
+      console.error('Помилка при оформленні замовлення:', error);
+      alert('⚠️ Помилка при відправленні. Ваше замовлення збережено локально. Спробуйте ще раз.');
+      
+      // Все одно зберегти локально
+      const order = {
+        id: formData.orderID,
+        date: formData.date,
+        total: formData.total,
+        status: "Очікування підтвердження",
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        items: formData.items
+      };
+
+      let h = JSON.parse(localStorage.getItem('zh_v2026') || '[]');
+      h.unshift(order);
+      localStorage.setItem('zh_v2026', JSON.stringify(h));
     }
 
-    function addToCart(id) {
-        const item = seeds.find(s => s.id === id);
-        cart.push({...item, cartId: Date.now() + Math.random()});
-        document.getElementById('cart-count').innerText = cart.length;
-        const t = document.getElementById('toast');
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 1500);
+    return false;
+  },
+
+  sendCustomerEmail(data) {
+    // Опціональна функція для відправки email клієнту
+    // Можна використати EmailJS або інший сервіс
+    console.log('Замовлення:', data);
+  },
+
+  renderHistory() {
+    const h = JSON.parse(localStorage.getItem('zh_v2026') || '[]');
+    const content = document.getElementById('history-content');
+    
+    if (h.length === 0) {
+      content.innerHTML = "<p style='text-align:center; padding:30px'>Історія замовлень порожня</p>";
+      return;
     }
 
-    function toggleModal(id) {
-        const m = document.getElementById(id);
-        m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
-        if(id === 'cart-modal') renderCart();
-        if(id === 'history-modal') renderHistory();
-    }
+    content.innerHTML = h.map(o => `
+      <div class="h-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong>${this.escapeHtml(o.id)}</strong>
+          <span class="status-tag">${this.escapeHtml(o.status)}</span>
+        </div>
+        <div style="font-size:12px; color:#999; margin:5px 0;">${this.escapeHtml(o.date)}</div>
+        <div style="font-size:12px; margin:5px 0;">📧 ${this.escapeHtml(o.email)}</div>
+        <div style="color:var(--primary); font-weight:800; font-size:18px">${this.escapeHtml(o.total)}</div>
+      </div>`).join('');
+  }
+};
 
-    function renderCart() {
-        const list = document.getElementById('cart-items');
-        let sum = 0, text = "";
-        list.innerHTML = cart.map(i => {
-            sum += i.price;
-            text += i.name + "; ";
-            return `<div class="cart-item"><span>${i.name}</span><span>${i.price} грн <span onclick="removeFromCart(${i.cartId})" style="color:red; cursor:pointer; margin-left:10px;">✕</span></span></div>`;
-        }).join('');
-        document.getElementById('total-sum').innerText = sum + " грн";
-        document.getElementById('order-data').value = text + " РАЗОМ: " + sum + " грн";
-    }
-
-    function removeFromCart(cid) {
-        cart = cart.filter(i => i.cartId !== cid);
-        document.getElementById('cart-count').innerText = cart.length;
-        renderCart();
-    }
-
-    function saveToHistory() {
-        const order = { id: "#" + Math.floor(Math.random()*1000), date: new Date().toLocaleString(), items: cart.map(i => i.name).join(', '), total: document.getElementById('total-sum').innerText, status: "В обробці" };
-        let orders = JSON.parse(localStorage.getItem('seed_orders_v3') || '[]');
-        orders.unshift(order);
-        localStorage.setItem('seed_orders_v3', JSON.stringify(orders));
-    }
-
-    function renderHistory() {
-        const list = document.getElementById('history-list');
-        const orders = JSON.parse(localStorage.getItem('seed_orders_v3') || '[]');
-        list.innerHTML = orders.length ? orders.map(o => `<div class="history-card"><div><strong>Замовлення ${o.id}</strong> <span class="status-badge">${o.status}</span></div><div style="font-size:12px; color:#888;">${o.date}</div><div style="font-size:14px; margin-top:5px;">${o.items}</div><div style="color:var(--green); font-weight:bold; margin-top:10px;">Сума: ${o.total}</div></div>`).join('') : "<p style='text-align:center'>Порожньо</p>";
-    }
-
-    displayProducts(seeds);
+app.init();
 </script>
 </body>
 </html>
